@@ -189,7 +189,7 @@
             border: 1px solid var(--glass-border); 
             border-radius: 28px; 
             display: none; 
-            grid-template-columns: repeat(2, 1fr); /* 改為雙欄式 */
+            grid-template-columns: repeat(2, 1fr); /* 雙欄式導覽 */
             padding: 14px 0; 
             z-index: 10000; 
             box-shadow: 0 -15px 35px rgba(0,0,0,0.8);
@@ -290,7 +290,7 @@
                 <iframe src="https://www.youtube.com/embed/IbYRhrFGPIo?si=6r9cgg5L8h7QRmTd" frameborder="0" allowfullscreen></iframe>
             </div>
             <div class="glass-card story-text-container">
-                <p>海科館的走道忽然安靜下來。</p>
+                <p>四周忽然安靜下來。</p>
                 <p>原本午後的人聲、腳步聲、餐後的笑鬧聲，像被海霧一層一層吞沒。</p>
                 <p class="story-highlight">你們停下腳步。</p>
                 <p>牆面上的光開始扭曲，腳下的地面傳來微微震動，像是踩在一艘即將離岸的老船上。</p>
@@ -339,15 +339,15 @@
                 <div class="img-container-full" style="display:block; margin-bottom: 20px;">
                     <img src="https://lh3.googleusercontent.com/pw/AP1GczO1FD6oPkteQJ8HfsB0oS9U_2X3M39PSFRpBw6hb4sqxAq2HRByIjAqTm5eC-7u5LwhvF-nQfrjJ8ZOA7eL6POxImF_7w-1YVA8NBNfoZu9CjEsEJhF1kAkMGrq77D-BhqfQhHLbd7LhU6r7eKUhaM=w1601-h901-s-no-gm?authuser=0" alt="杜勒日記自白插圖">
                 </div>
-                <p>吾為杜勒。</p>
+                <p>我為杜勒。</p>
                 <p>若你們已經翻開這本日記，</p>
                 <p>代表穿梭口已經關閉，</p>
                 <p class="story-highlight">你們也已踏入不屬於自己的八斗子。</p>
                 <p>當你們拿到這本日記時，</p>
-                <p>吾已不再行走於海風之中。</p>
+                <p>我已不再行走於海風之中。</p>
                 <p>不再掌舵，不再補網，</p>
                 <p>也不再聽見清晨漁船出港時的引擎聲。</p>
-                <p>但吾仍留下了這些文字。</p>
+                <p>但我仍留下了這些文字。</p>
                 <div style="text-align: right; margin-top: 15px;">
                     <button class="btn-action" onclick="showPrologueP4()">繼續翻閱 ➔</button>
                 </div>
@@ -366,7 +366,7 @@
                 <p>不能只靠力氣，也不能只靠運氣。</p>
                 <p class="story-highlight">穿梭口需要記憶作為座標。</p>
                 <p>若座標散失，歸途便會迷航。</p>
-                <p>吾在日記中留下了五段八斗子的生活。</p>
+                <p>我在日記中留下了五段八斗子的生活。</p>
                 <p>每一段生活，都藏著一組能喚醒圖騰的密碼。</p>
                 <p>找到它們、讀懂它們。</p>
                 <p>若你們能找回五段記憶，</p>
@@ -532,7 +532,6 @@
     </div>
 
     <script>
-        // --- 1. 資料庫設定 ---
         const missionData = [
             { 
                 id: 1, chapter: "任務一", name: "入口的老約定", stars: 1, radar: [1, 1, 3, 2, 1, 1], 
@@ -554,7 +553,7 @@
                 storyImg: "",
                 landmarkImg: "https://lh3.googleusercontent.com/pw/AP1GczMH64KveyW8t85mg7Ke0aSDXFbcX_sAtxFdkliTrFrABNKTc__oAV4u9y3Kkj-sdH49XK3qOuQxz4-oNlhN4gb2pAla_IfY7jN0qDsXwbvfrSkUe92uZN-X-t63lUG3GssFszGbshwRsC9QflMADUs=w1204-h901-s-no-gm?authuser=0",
                 landmarkText: "任務目標：\n請觀察八斗子入口處，找出杜勒口中「不屬於這裡的傢伙」共有多少。",
-                landmarkBtnText: "送出答案",
+                landmarkBtnText: "前往解謎",
                 puzzleDesc: "請觀察八斗子入口處，找出杜勒口中「不屬於這裡的傢伙」共有多少。",
                 inputPlaceholder: "請輸入數字",
                 submitBtnText: "送出答案",
@@ -579,7 +578,7 @@
 很多老地方安靜下來，不再像以前那樣日日有人進出。
 可那間老屋沒有真的沉睡。`,
                     `現在，屋裡常飄出炭火香。
-有人把海裡細小而珍貴的滋味，拌進肉裡，慢慢烤熟。
+有人把海裡細小而珍貴的味道，拌進肉裡，慢慢烤熟。
 咬下去的時候，嘴裡會有細細的聲響。
 像浪花碎開，也像從前魚寮裡那些沒有寫進帳本的日子，又重新活了過來。
 我常覺得，地方的味道不一定會消失。它只是換了模樣。從討海人的手上，走進旅人的記憶裡。
@@ -591,7 +590,7 @@
                 ],
                 landmarkImg: "",
                 landmarkText: "杜勒沒有寫下地址。\n他只記得那裡曾經是魚寮，後來成為保存八斗子地方味道的場域。請根據日記內容，找到那間「曾經是魚寮、如今仍有香氣升起的老屋」，並完成屋內的挑戰及輸入密碼。",
-                landmarkBtnText: "送出答案",
+                landmarkBtnText: "前往解謎",
                 puzzleDesc: "請前往現地，在引路人的指導下製作飛魚卵香腸，完成挑戰後，引路人將給予密鑰提示",
                 inputPlaceholder: "請輸入密鑰",
                 submitBtnText: "送出答案",
@@ -600,8 +599,73 @@
                 postStory: "當正確門牌被輸入後，日記忽然散出淡淡的炭火香。\n紙面上的魚寮輪廓逐漸清晰。\n你們彷彿聽見鐵網翻動、炭火輕響，以及海風穿過老屋門縫的聲音。杜勒留下的字跡慢慢浮現：\n「海的味道，若有人願意記得，就不會真正離開。」\n老屋的影子中，一枚新的圖騰浮現。",
                 postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczNOP5RCCSJ6DaNUOA5qA3uMmqiWSUF9i3Fo-Ronf5pTovgLw_tvqNoTTeMI6SFI52s9T1jyPuX6MCgozUV_9-Ib9ANXKjQs7HK-RXaJLoD0nY_Zb_o7j007LjqCiRorgNAwZAimdzG-0DO1-o7iuMs=w350-h391-s-no-gm?authuser=0"
             },
-            { id: 3, chapter: "任務三", name: "沙灘消失後", stars: 2, radar: [1, 2, 3, 5, 4, 2], story: ["佈告欄上的數字。"], answer: "0801" },
-            { id: 4, chapter: "任務四", name: "神蹟", stars: 3, radar: [4, 4, 3, 4, 2, 3], story: ["燈塔頻率異常。"], answer: "WAVE" },
+            { 
+                id: 3, 
+                chapter: "任務三", 
+                name: "沙灘消失後", 
+                stars: 3, 
+                radar: [1, 2, 3, 5, 4, 2], 
+                story: [
+                    `1983.08.02 午後雨停，港風帶鹽
+
+今日雨停後，我沿著八斗街走了一段。港邊的風變得很直，吹過來時，已經不是我小時候熟悉的味道。年輕人若沒有聽老人說，大概很難相信，這條街以前離海那麼近。
+那時候，房舍前方不遠就是沙。孩子放學後會往海邊跑，腳底踩著細沙，褲管常被浪打濕。
+大人一邊整理漁具，一邊喊人回家吃飯。
+海浪聲很近。近得像在門口說話。後來工程來了，海岸線慢慢往外退。船有了新的停靠地方，討海人也多了一些安全。`,
+                    `我知道，這是時代往前走。可是每次走到那排房子前，我還是會停一下。它們站得很整齊，一棟接著一棟，像是替那片消失的沙灘守著位置。
+人們現在從它們前面走過，多半只會看見房子，但我看見的是浪線，是魚寮的影子，是以前孩子跑過去又跑回來的腳印。
+若想知道沙灘後來變成了什麼，就別只看港，去看看那排房子，老沙灘的痕跡，還站在那裡。`
+                ], 
+                storyImg: [
+                    "",
+                    "https://lh3.googleusercontent.com/pw/AP1GczNboihlABnxiCunviZ0IKQddvN2UMYn3qfPQtEkI-6e78XUZpGjfSCNA8gl8dguhHoJyCVmOhJkfCpG8ltrKfBJqWlURVLCEhtrC9dl-y0mDivaVoIXTQDBipfrqI9u7uz0ryHWFV6ZcJUkikFN5QU=w634-h901-s-no-gm?authuser=0"
+                ],
+                storyBtnText: "➔",
+                landmarkImg: "https://lh3.googleusercontent.com/pw/AP1GczNboihlABnxiCunviZ0IKQddvN2UMYn3qfPQtEkI-6e78XUZpGjfSCNA8gl8dguhHoJyCVmOhJkfCpG8ltrKfBJqWlURVLCEhtrC9dl-y0mDivaVoIXTQDBipfrqI9u7uz0ryHWFV6ZcJUkikFN5QU=w634-h901-s-no-gm?authuser=0",
+                landmarkText: "八斗街曾經靠近沙灘，後來因為建港與海岸變化，原本的沙灘逐漸消失，成為今日的漁民住宅空間，請判斷那排漁民住宅共有幾棟。",
+                landmarkBtnText: "前往解謎",
+                puzzleDesc: "八斗街曾經靠近沙灘，後來因為建港與海岸變化，原本的沙灘逐漸消失，成為今日的漁民住宅空間，請判斷那排漁民住宅共有幾棟。",
+                inputPlaceholder: "請輸入數字",
+                submitBtnText: "送出答案",
+                answer: "8",
+                errorMsg: "日記頁上的沙痕沒有變化。那排房子如何一棟接著一棟，站在舊海岸的位置上。",
+                postStory: "當正確數字被輸入後，杜勒日記上的沙痕開始移動。紙面上原本模糊的海岸線，慢慢浮現出舊沙灘的輪廓。接著，浪線退去，一排房子的影子站了起來。\n\n你們聽見杜勒留下的聲音：\n「海不在眼前，不代表它沒有來過。」\n「有人記得，沙灘就還沒有完全消失。」\n\n排屋與浪線之間，一枚新的圖騰緩緩浮現。",
+                postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczN2uwsPEqbXnRZSgQD_C0CDuS5xtzqFva7mPfMMUIYRX6yUUtk2tq0-v5pPYTKOlJi6KIXUCknAL7r2cH_I8K5N_X66DhjDECloApchC1JtxQIdnAj_33BFIexIGJwgJRxxj6ZHOMBJE_8pQamzox8=w371-h387-s-no-gm?authuser=0"
+            },
+            { 
+                id: 4, 
+                chapter: "任務四", 
+                name: "神蹟", 
+                stars: 3, 
+                radar: [3, 1, 2, 4, 4, 3], 
+                story: [
+                    `1983.08.18 雨後放晴，廟前香煙未散
+
+今日到廟前上香。
+雨剛停，石階還濕，香爐裡的煙被風一吹，慢慢往屋簷下散開。
+年輕時我總以為，人只要力氣夠、船夠穩、眼睛看得準，就能靠自己闖過海上的風浪。老了才知道，很多時候，人不是不勇敢，只是需要一點能讓心安定下來的東西。
+八斗子的媽祖，最早並不是住在今日這樣的廟裡。老人說，香火先來，神像後來，廟宇又是更後來的事。我小時候，常聽長輩說起一段戰爭時期的往事。`,
+                    `那時，村裡有一批人被徵召，要離開八斗子，到很遠、很危險的地方去。出發前，眾人向媽祖求香火護身。誰都知道，離開家門的人，都希望能帶著一份平安走。
+可是神明的指示，卻和眾人原本想的不一樣。後來才知道，神明不是少給。是早一步知道，真正要離開的人，並沒有原先以為的那麼多。
+我年輕時聽這故事，只覺得神奇。
+現在再想，才知道那幾份香火裡，藏著的不時候牽掛。討海人最懂這種心情。
+人走向海，或走向遠方，手裡若還握著一點家鄉的香火，心就不會那麼孤單。`
+                ], 
+                storyImg: [
+                    "",
+                    "https://lh3.googleusercontent.com/pw/AP1GczMY1tXkJjJOhsrtBPtJxQMRoQvWAVGq24jpdAoLGHZwFUlR3LSlcyGyZzCNgut-SJG2DUf5izxwocLRI4_X8lJoaD9WuMhMc0GKQvJmn9YxqjsuWnzFtr-dyiANB1tGnQEEKXmaA33OPf5yHhInYKQ=w1274-h901-s-no-gm?authuser=0"
+                ],
+                landmarkImg: "",
+                landmarkText: "日記提到一段八斗子媽祖的地方記憶。當年有一批村民即將離鄉，眾人向媽祖祈求護身，但神明的指示，卻和眾人原本預期不同。\n\n請輸入：媽祖指示的數量？",
+                landmarkBtnText: "前往解謎",
+                puzzleDesc: "日記提到一段八斗子媽祖的地方記憶。當年有一批村民即將離鄉，眾人向媽祖祈求護身，但神明的指示，卻和眾人原本預期不同。\n\n請輸入：媽祖指示的數量？",
+                inputPlaceholder: "請輸入數字",
+                submitBtnText: "送出答案",
+                answer: "14",
+                errorMsg: "日記頁上的香灰沒有散開。你似乎找到了故事，但還沒有找出神明真正指示的數量。",
+                postStory: "當正確數字被輸入後，杜勒日記上的香灰痕跡開始發亮。\n紙面上浮現出一縷細細的香煙。香煙向上盤旋，最後化成廟宇屋脊的形狀。\n\n你們聽見杜勒留下的聲音：\n「人離開家，不一定知道自己會去哪裡。」\n「但只要有人替他點香，他就知道自己不是孤身一人。」\n\n香煙與屋脊之間，一枚新的圖騰緩緩浮現。",
+                postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczP66CCYywi1KMaLl8yj5gqNA6zsQ9vD_aX1t_YQAqjv2UFyjBQyQfW2x7u3cZsN4aHh-f2cIb0A9U13cZAm0QvNyKyx_e54-9eknQHunZAcN4uTqrLggZH2Gk_uslK6lB_xcJXMa_FA5fbWdju1zfI=w370-h386-s-no-gm?authuser=0"
+            },
             { id: 5, chapter: "任務五", name: "溫暖的海", stars: 3, radar: [3, 3, 4, 4, 5, 2], story: ["地圖背後的秘密。"], answer: "NE" },
             { id: 6, chapter: "最終章", name: "最後的考驗", stars: 5, radar: [5, 5, 5, 5, 5, 5], story: ["解鎖終極系統。"], answer: "LEGEND", isFinal: true }
         ];
@@ -609,7 +673,6 @@
         let state = { isStarted: false, playTime: 0, completedMissions: [], activeMId: null, activeStep: 'main', storyPageIndex: 0 };
         const STORAGE_KEY = 'abs_port_pro_v18_final';
 
-        // --- 核心邏輯 ---
         function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
         
         function loadState() {
@@ -679,7 +742,7 @@
             document.getElementById(screenId).classList.add('active');
             
             const nav = document.getElementById('global-nav');
-            // 修改：底部導覽列只在任務清單 (mission-screen) 顯示，其他任何頁面皆隱藏
+            // 底部導覽列只在任務列表 (mission-screen) 顯示
             const showNav = (screenId === 'mission-screen');
             nav.style.display = showNav ? 'grid' : 'none';
             
@@ -721,7 +784,6 @@
                     <div class="card-status" style="font-weight:900; color:var(--accent-yellow)">${status === 'available' ? 'GO' : (status === 'locked' ? '🔒' : '')}</div>
                     <div class="pass-stamp-mini">PASS</div>
                 `;
-                
                 if (status !== 'locked') {
                     card.onclick = () => openLevel(m.id);
                 }
@@ -745,13 +807,23 @@
                 const currentImg = Array.isArray(m.storyImg) ? m.storyImg[page] : m.storyImg;
                 if (currentImg) { imgEl.src = currentImg; imgBox.style.display = 'block'; } else { imgBox.style.display = 'none'; }
                 document.getElementById('lv-story-text').innerText = m.story[page];
+                
+                const nextArrow = document.querySelector('.next-arrow');
+                if (nextArrow) {
+                    if (page === m.story.length - 1) {
+                        nextArrow.innerText = m.storyBtnText || "➔";
+                    } else {
+                        nextArrow.innerText = "➔";
+                    }
+                }
+                
                 navigateTo('lv-story-screen');
             } else if (step === 'landmark') {
                 const imgBox = document.getElementById('lv-landmark-img-box');
                 const imgEl = document.getElementById('lv-landmark-img');
                 if (m.landmarkImg) { imgEl.src = m.landmarkImg; imgBox.style.display = 'block'; } else { imgBox.style.display = 'none'; }
                 document.getElementById('lv-landmark-text').innerText = m.landmarkText;
-                document.getElementById('lv-landmark-btn').innerText = m.landmarkBtnText || "抵達現場";
+                document.getElementById('lv-landmark-btn').innerText = m.landmarkBtnText || "前往解謎";
                 navigateTo('lv-landmark-screen');
             } else if (step === 'puzzle') {
                 if (state.completedMissions.includes(id)) {
@@ -812,12 +884,11 @@
                 else navigateTo('mission-screen');
             } else {
                 const errEl = document.getElementById('puzzle-error');
-                errEl.innerText = m.errorMsg || "驗證失敗，密鑰格式不符。";
+                errEl.innerText = m.errorMsg || "驗證失敗，密鑰不符。";
                 errEl.style.display = 'block';
             }
         }
 
-        // 渲染已收集與未解鎖的圖騰列表
         function renderTotems() {
             const container = document.getElementById('archive-list');
             if (!state.isStarted) return;
@@ -825,8 +896,8 @@
             const totemData = [
                 { id: 1, name: "入口圖騰：相遇之印", desc: "「人若能找到彼此，就不算真正迷路。」\n喚醒八斗子入口處的古老回憶印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczMxxa-Ms3ma-_E1lLzUnJcOnXQmafzy1d2Q57555v0O79cwFDFfDsxmHxdRfUjRSY1ofQJegpl7QE6KL4Mz3dHxMNRrRSSO2M0iJkekyQuC9rueJslq_k08VZv41_AJH3m3243g3RrE5JyD6FxeSKw=w370-h378-s-no-gm?authuser=0" },
                 { id: 2, name: "地方圖騰：漁火之印", desc: "承載著地方的獨特香氣與歷史溫度，牽引著世代繁衍與傳承的脈絡。", img: "https://lh3.googleusercontent.com/pw/AP1GczNOP5RCCSJ6DaNUOA5qA3uMmqiWSUF9i3Fo-Ronf5pTovgLw_tvqNoTTeMI6SFI52s9T1jyPuX6MCgozUV_9-Ib9ANXKjQs7HK-RXaJLoD0nY_Zb_o7j007LjqCiRorgNAwZAimdzG-0DO1-o7iuMs=w350-h391-s-no-gm?authuser=0" },
-                { id: 3, name: "沙灘圖騰：潮汐之印", desc: "訴說著被時間與海浪掩埋的黃金海岸，凝聚海洋最深沉的歷史記憶。", img: "" },
-                { id: 4, name: "神蹟圖騰：指引之印", desc: "在波濤洶湧的汪洋之中，恆常不變地指引航道、守護安寧的信仰。", img: "" },
+                { id: 3, name: "沙灘圖騰：潮汐之印", desc: "訴說著被時間與海浪掩埋的黃金海岸，凝聚海洋最深沉的歷史記憶。", img: "https://lh3.googleusercontent.com/pw/AP1GczN2uwsPEqbXnRZSgQD_C0CDuS5xtzqFva7mPfMMUIYRX6yUUtk2tq0-v5pPYTKOlJi6KIXUCknAL7r2cH_I8K5N_X66DhjDECloApchC1JtxQIdnAj_33BFIexIGJwgJRxxj6ZHOMBJE_8pQamzox8=w371-h387-s-no-gm?authuser=0" },
+                { id: 4, name: "神蹟圖騰：指引之印", desc: "「只要有人替他點香，他就知道自己不是孤身一人。」\n喚醒八斗子度天宮媽祖守護子民與離鄉遊子的溫暖印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczP66CCYywi1KMaLl8yj5gqNA6zsQ9vD_aX1t_YQAqjv2UFyjBQyQfW2x7u3cZsN4aHh-f2cIb0A9U13cZAm0QvNyKyx_e54-9eknQHunZAcN4uTqrLggZH2Gk_uslK6lB_xcJXMa_FA5fbWdju1zfI=w370-h386-s-no-gm?authuser=0" },
                 { id: 5, name: "溫慢圖騰：歸巢之印", desc: "如同環抱島嶼的溫暖洋流，流淌著生命的熱度，是指引返鄉的終點座標。", img: "" }
             ];
 
@@ -856,10 +927,16 @@
             }).join('');
         }
 
-        function openOverlay(id) { document.getElementById(id).style.display = 'block'; }
+        function openOverlay(id) { 
+            if (id === 'archive-overlay') {
+                renderTotems();
+            }
+            document.getElementById(id).style.display = 'block'; 
+        }
         function closeOverlay() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); }
         
         function resetGame() { 
+            closeOverlay();
             document.getElementById('confirm-dialog').style.display = 'block';
         }
 
@@ -906,7 +983,7 @@
                     clearInterval(loadTimer); 
                     setTimeout(() => { 
                         loadState(); 
-                        if(!document.getElementById('resume-dialog').style.display || document.getElementById('resume-dialog').style.display === 'none') {
+                        if (!document.getElementById('resume-dialog').style.display || document.getElementById('resume-dialog').style.display === 'none') {
                             navigateTo('main-screen'); 
                         }
                     }, 500); 
