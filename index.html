@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>絕對傳奇之杜勒日記 - 實境解謎</title>
+    <title>絕對傳奇之杜勒日記 - 實境解謎系統</title>
     
     <!-- iOS Web App 適配 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="杜勒日記">
 
-    <!-- 引入 Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=300;400;700&display=swap" rel="stylesheet">
+    <!-- 引入 Google Fonts (思源黑體與思源宋體) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg-deep: #0a0e14;
             --primary-blue: #1a2a3a;
+            --ocean-blue: #0b2545; 
+            --ocean-light: #134074; 
             --accent-yellow: #ffd700;
             --accent-gold: #b8860b;
             --glass-bg: rgba(0, 0, 0, 0.85);
@@ -40,11 +42,16 @@
             width: 100%;
             height: 100%;
             height: 100dvh;
-            font-family: 'Noto Sans TC', sans-serif;
+            font-family: 'Noto Sans TC', sans-serif; /* 內文用思源黑體 */
             background-color: var(--bg-deep);
             color: var(--text-white);
             overflow: hidden;
             position: fixed;
+        }
+
+        /* 標題與大標字體套用思源宋體 */
+        h1, h2, h3, b, .info-chapter-title, .btn-action, .m-id, .m-name, .nav-item {
+            font-family: 'Noto Serif TC', serif;
         }
 
         /* 全域背景層 */
@@ -189,7 +196,7 @@
             border: 1px solid var(--glass-border); 
             border-radius: 28px; 
             display: none; 
-            grid-template-columns: repeat(2, 1fr); /* 雙欄式導覽 */
+            grid-template-columns: repeat(2, 1fr); 
             padding: 14px 0; 
             z-index: 10000; 
             box-shadow: 0 -15px 35px rgba(0,0,0,0.8);
@@ -199,8 +206,7 @@
         .nav-item.active { color: var(--accent-yellow); }
 
         /* 序幕流程分頁 */
-        .prologue-page { display: none; flex-direction: column; width: 100%; }
-        .prologue-page.active { display: flex; animation: fadeIn 0.5s ease forwards; }
+        .prologue-page { display: flex; flex-direction: column; width: 100%; }
 
         .story-text-container { font-size: 0.95rem; line-height: 1.8; color: var(--text-white); overflow: visible; }
         .story-text-container p { margin-bottom: 16px; text-align: justify; white-space: pre-wrap; }
@@ -209,13 +215,32 @@
         .video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 14px; border: 1px solid var(--glass-border); margin-bottom: 25px; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        /* 關卡雷達圖與標題 */
+        /* 關卡雷達圖與標題：優化為極簡無背景質感 */
         .info-chapter-title { font-size: 3rem; letter-spacing: 8px; font-weight: 300; margin-top: 5%; color: #fff; text-align: center; }
         .info-mission-box { background: #fff; color: #000; padding: 10px 15px; border-radius: 10px; font-weight: 900; width: 90%; margin: 20px auto; font-size: 1.4rem; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .radar-box { width: 230px; height: 230px; margin: 30px auto; position: relative; }
+        
+        .radar-box { 
+            width: 230px; 
+            height: 230px; 
+            margin: 30px auto; 
+            position: relative; 
+            background: transparent; /* 刪除底色 */
+            border: none; /* 刪除邊框 */
+            box-shadow: none; /* 刪除陰影 */
+            padding: 10px;
+        }
         .radar-svg { width: 100%; height: 100%; }
-        .radar-area { fill: rgba(100, 149, 237, 0.5); stroke: #a0c4ff; stroke-width: 2.5; filter: drop-shadow(0 0 8px rgba(160,196,255,0.7)); }
-        .radar-label { position: absolute; font-size: 0.75rem; color: #fff; font-weight: bold; text-shadow: 0 1px 4px #000; white-space: nowrap; }
+        .radar-area { fill: rgba(160, 196, 255, 0.4); stroke: #a0c4ff; stroke-width: 2.5; filter: drop-shadow(0 0 6px rgba(160,196,255,0.6)); }
+        
+        /* 放大分析標籤字體 */
+        .radar-label { 
+            position: absolute; 
+            font-size: 1rem; /* 顯著放大字體 */
+            color: #e0f2fe; 
+            font-weight: 700; 
+            text-shadow: 0 2px 6px rgba(0,0,0,0.95); 
+            white-space: nowrap; 
+        }
 
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); z-index: 15000; display: none; padding: 30px; overflow-y: auto; }
         #resume-dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 88%; z-index: 20000; display: none; }
@@ -264,117 +289,114 @@
     <!-- 2. 主畫面 -->
     <section id="main-screen" class="screen" style="justify-content: space-around; align-items: center; text-align: center;">
         <div class="hero-info">
-            <p style="color:var(--accent-yellow); font-size:0.8rem; letter-spacing:6px; margin-bottom: 5px;">MISSION CONTROL</p>
+            <p style="color:var(--accent-yellow); font-size:0.8rem; letter-spacing:6px; margin-bottom: 5px;">絕對傳奇</p>
             <h1 style="font-size:3rem; font-weight:700; text-shadow: 0 0 25px rgba(0,0,0,0.9);">杜勒日記</h1>
-            <p style="font-size: 0.75rem; color: var(--accent-yellow); text-transform: uppercase; letter-spacing: 3px; opacity: 0.8;">Legend of Absolutus</p>
+            <p style="font-size: 0.75rem; color: var(--accent-yellow); text-transform: uppercase; letter-spacing: 3px; opacity: 0.8;">Legend of Absolutus • dulles' Diary</p>
         </div>
         <div style="width: 150px; height: 150px; border: 1px solid rgba(255,215,0,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center;">
             <div style="width: 120px; height: 120px; background: rgba(0,0,0,0.6); border: 2px solid var(--accent-yellow); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer;" onclick="startNewJourney()">
                 <svg width="45" height="45" viewBox="0 0 24 24" fill="var(--accent-yellow)"><path d="M8 5v14l11-7z"/></svg>
-                <b style="letter-spacing:3px; margin-top:5px; font-size: 1.3rem; color:#fff;">START</b>
+                <b style="letter-spacing:1px; margin-top:5px; font-size: 0.95rem; color:#fff;">Enter the gate</b>
             </div>
         </div>
         <p style="color:var(--pass-green); font-size:0.75rem; letter-spacing:3px;">● PORT SIGNAL SECURED</p>
     </section>
 
-    <!-- 3. 序幕 (四階流程) -->
-    <section id="prologue-screen" class="screen">
-        <!-- 序幕 P1 -->
-        <div id="prologue-p1" class="prologue-page active">
-            <button class="btn-back" onclick="navigateTo('main-screen')">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                返回主畫面
-            </button>
-            <h2 style="color:var(--accent-yellow); margin-bottom:20px; letter-spacing:3px; text-align: center;">序章：杜勒日記</h2>
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/IbYRhrFGPIo?si=6r9cgg5L8h7QRmTd" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div class="glass-card story-text-container">
-                <p>四周忽然安靜下來。</p>
-                <p>原本午後的人聲、腳步聲、餐後的笑鬧聲，像被海霧一層一層吞沒。</p>
-                <p class="story-highlight">你們停下腳步。</p>
-                <p>牆面上的光開始扭曲，腳下的地面傳來微微震動，像是踩在一艘即將離岸的老船上。</p>
-                <p>遠處，有人低聲喊著「%*^#@#!**」</p>
-                <p>那聲音像是從海邊傳來，卻又像從很久以前傳來。</p>
-                <p>下一秒，眼前的八斗子變得陌生。</p>
-                <div style="text-align: right; margin-top: 15px;">
-                    <button class="btn-action" onclick="showPrologueNext()">引路人出現 ➔</button>
-                </div>
+    <!-- 3. 序幕 P1 -->
+    <section id="prologue-p1" class="screen">
+        <button class="btn-back" onclick="navigateTo('main-screen')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主畫面
+        </button>
+        <h2 style="color:var(--accent-yellow); margin-bottom:20px; letter-spacing:3px; text-align: center;">PROLOGUE: dulles' Diary</h2>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/IbYRhrFGPIo?si=6r9cgg5L8h7QRmTd" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="glass-card story-text-container">
+            <p>四周忽然安靜下來。</p>
+            <p>原本午後的人聲、腳步聲、餐後的笑鬧聲，像被海霧一層一層吞沒。</p>
+            <p class="story-highlight">你們停下腳步。</p>
+            <p>牆面上的光開始扭曲，腳下的地面傳來微微震動，像是踩在一艘即將離岸的老船上。</p>
+            <p>遠處，有人低聲喊著「%*^#@#!**」</p>
+            <p>那聲音像是從海邊傳來，卻又像從很久以前傳來。</p>
+            <p>下一秒，眼前的八斗子變得陌生。</p>
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn-action" onclick="navigateTo('prologue-p2')">引路人出現 ➔</button>
             </div>
         </div>
+    </section>
 
-        <!-- 序幕 P2 -->
-        <div id="prologue-p2" class="prologue-page">
-            <button class="btn-back" onclick="showProloguePrev(1)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                回到上一頁
-            </button>
-            <h2 style="color:var(--accent-yellow); margin-bottom:20px; letter-spacing:3px; text-align: center;">序章：杜勒日記</h2>
-            <div class="glass-card story-text-container">
-                <div class="img-container-full" style="display:block; margin-bottom: 20px;">
-                    <img src="https://lh3.googleusercontent.com/pw/AP1GczMhvgx5XjBFVZFSCcIFC5yv4Bb38QWIcM3kPRx1JWYpo92STcw1rLLk21TUs9ZlpV3yy0ymNYiX-QbVLn3GyDKkpWFoDCkvgIVH-g49oGTuOAntpN_NIQC4xO9UBZdZv0EWYYFD8mrUTDAr1p3MYzE=w1601-h901-s-no-gm?authuser=0" alt="引路人交付日記插圖">
-                </div>
-                <p>一名披著舊斗篷的人站在霧裡。</p>
-                <p>他的臉看不清楚，只能看見手中抱著一本被海風侵蝕的舊日記。</p>
-                <p>封皮龜裂，邊角泛黃，紙頁之間還夾著細沙與鹽痕。</p>
-                <p>他望向真灼之眼冒險團，緩緩開口：</p>
-                <p>「你們已經不在原來的八斗子了。」</p>
-                <p>「這裡是 616 宇宙的基隆。」</p>
-                <p class="story-highlight">「想回去，就必須讀懂這本日記。」</p>
-                <p>說完，他將日記交到你們手中。</p>
-                <div style="text-align: right; margin-top: 15px;">
-                    <button class="btn-action" onclick="showPrologueP3()">翻開日記 ➔</button>
-                </div>
+    <!-- 序幕 P2 -->
+    <section id="prologue-p2" class="screen">
+        <button class="btn-back" onclick="navigateTo('prologue-p1')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            回到上一頁
+        </button>
+        <h2 style="color:var(--accent-yellow); margin-bottom:20px; letter-spacing:3px; text-align: center;">PROLOGUE: dulles' Diary</h2>
+        <div class="glass-card story-text-container">
+            <div class="img-container-full" style="display:block; margin-bottom: 20px;">
+                <img src="https://lh3.googleusercontent.com/pw/AP1GczMhvgx5XjBFVZFSCcIFC5yv4Bb38QWIcM3kPRx1JWYpo92STcw1rLLk21TUs9ZlpV3yy0ymNYiX-QbVLn3GyDKkpWFoDCkvgIVH-g49oGTuOAntpN_NIQC4xO9UBZdZv0EWYYFD8mrUTDAr1p3MYzE=w1601-h901-s-no-gm?authuser=0" alt="引路人交付日記插圖">
+            </div>
+            <p>一名披著舊斗篷的人站在霧裡。</p>
+            <p>他的臉看不清楚，只能看見手中抱著一本被海風侵蝕的舊日記。</p>
+            <p>封皮龜裂，邊角泛黃，紙頁之間還夾著細沙與鹽痕。</p>
+            <p>他望向真灼之眼冒險團，緩緩開口：</p>
+            <p>「你們已經不在原來的八斗子了。」</p>
+            <p>「這裡是 616 宇宙的基隆。」</p>
+            <p class="story-highlight">「想回去，就必須讀懂這本日記。」</p>
+            <p>說完，他將日記交到你們手中。</p>
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn-action" onclick="navigateTo('prologue-p3')">翻開日記 ➔</button>
             </div>
         </div>
+    </section>
 
-        <!-- 序幕 P3 -->
-        <div id="prologue-p3" class="prologue-page">
-            <button class="btn-back" onclick="showProloguePrev(2)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                回到上一頁
-            </button>
-            <h2 style="color:var(--accent-yellow); margin-bottom:20px; letter-spacing:3px; text-align: center;">序章：杜勒日記</h2>
-            <div class="glass-card story-text-container">
-                <div class="img-container-full" style="display:block; margin-bottom: 20px;">
-                    <img src="https://lh3.googleusercontent.com/pw/AP1GczO1FD6oPkteQJ8HfsB0oS9U_2X3M39PSFRpBw6hb4sqxAq2HRByIjAqTm5eC-7u5LwhvF-nQfrjJ8ZOA7eL6POxImF_7w-1YVA8NBNfoZu9CjEsEJhF1kAkMGrq77D-BhqfQhHLbd7LhU6r7eKUhaM=w1601-h901-s-no-gm?authuser=0" alt="杜勒日記自白插圖">
-                </div>
-                <p>我為杜勒。</p>
-                <p>若你們已經翻開這本日記，</p>
-                <p>代表穿梭口已經關閉，</p>
-                <p class="story-highlight">你們也已踏入不屬於自己的八斗子。</p>
-                <p>當你們拿到這本日記時，</p>
-                <p>我已不再行走於海風之中。</p>
-                <p>不再掌舵，不再補網，</p>
-                <p>也不再聽見清晨漁船出港時的引擎聲。</p>
-                <p>但我仍留下了這些文字。</p>
-                <div style="text-align: right; margin-top: 15px;">
-                    <button class="btn-action" onclick="showPrologueP4()">繼續翻閱 ➔</button>
-                </div>
+    <!-- 序幕 P3 -->
+    <section id="prologue-p3" class="screen">
+        <button class="btn-back" onclick="navigateTo('prologue-p2')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            回到上一頁
+        </button>
+        <h2 style="color:var(--accent-yellow); margin-bottom:20px; letter-spacing:3px; text-align: center;">PROLOGUE: dulles' Diary</h2>
+        <div class="glass-card story-text-container">
+            <div class="img-container-full" style="display:block; margin-bottom: 20px;">
+                <img src="https://lh3.googleusercontent.com/pw/AP1GczO1FD6oPkteQJ8HfsB0oS9U_2X3M39PSFRpBw6hb4sqxAq2HRByIjAqTm5eC-7u5LwhvF-nQfrjJ8ZOA7eL6POxImF_7w-1YVA8NBNfoZu9CjEsEJhF1kAkMGrq77D-BhqfQhHLbd7LhU6r7eKUhaM=w1601-h901-s-no-gm?authuser=0" alt="杜勒日記自白插圖">
+            </div>
+            <p>我為杜勒。</p>
+            <p>若你們已經翻開這本日記，</p>
+            <p>代表穿梭口已經關閉，</p>
+            <p class="story-highlight">你們也已踏入不屬於自己的八斗子。</p>
+            <p>當你們拿到這本日記時，</p>
+            <p>我已不再行走於海風之中。</p>
+            <p>不再掌舵，不再補網，</p>
+            <p>也不再聽見清晨漁船出港時的引擎聲。</p>
+            <p>但我仍留下了這些文字。</p>
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn-action" onclick="navigateTo('prologue-p4')">繼續翻閱 ➔</button>
             </div>
         </div>
+    </section>
 
-        <!-- 序幕 P4 -->
-        <div id="prologue-p4" class="prologue-page">
-            <button class="btn-back" onclick="showProloguePrev(3)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                回到上一頁
-            </button>
-            <h2 style="color:var(--accent-yellow); margin-bottom:20px; letter-spacing:3px; text-align: center;">序章：杜勒日記</h2>
-            <div class="glass-card story-text-container">
-                <p>你們想回到自己的世界，</p>
-                <p>不能只靠力氣，也不能只靠運氣。</p>
-                <p class="story-highlight">穿梭口需要記憶作為座標。</p>
-                <p>若座標散失，歸途便會迷航。</p>
-                <p>我在日記中留下了五段八斗子的生活。</p>
-                <p>每一段生活，都藏著一組能喚醒圖騰的密碼。</p>
-                <p>找到它們、讀懂它們。</p>
-                <p>若你們能找回五段記憶，</p>
-                <p>並將圖騰重新排列，</p>
-                <p>返航的口訣便會出現。</p>
-                <div style="text-align: right; margin-top: 15px;">
-                    <button class="btn-action" onclick="navigateTo('mission-screen')">任務啟動 ➔</button>
-                </div>
+    <!-- 序幕 P4 -->
+    <section id="prologue-p4" class="screen">
+        <button class="btn-back" onclick="navigateTo('prologue-p3')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            回到上一頁
+        </button>
+        <h2 style="color:var(--accent-yellow); margin-bottom:20px; letter-spacing:3px; text-align: center;">PROLOGUE: dulles' Diary</h2>
+        <div class="glass-card story-text-container">
+            <p>你們想回到自己的世界，</p>
+            <p>不能只靠力氣，也不能只靠運氣。</p>
+            <p class="story-highlight">穿梭口需要記憶作為座標。</p>
+            <p>若座標散失，歸途便會迷航。</p>
+            <p>我在日記中留下了五段八斗子的生活。</p>
+            <p>每一段生活，都藏著一組能喚醒圖騰的密碼。</p>
+            <p>找到它們、讀懂它們。</p>
+            <p>若你們能找回五段記憶，</p>
+            <p>並將圖騰重新排列，</p>
+            <p>返航的口訣便會出現。</p>
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn-action" onclick="navigateTo('mission-screen')">任務啟動 ➔</button>
             </div>
         </div>
     </section>
@@ -388,7 +410,7 @@
         <div id="mission-list-container"></div>
     </section>
 
-    <!-- 5. 關卡資訊 -->
+    <!-- 5. 關卡資訊 (極簡單層難度分析) -->
     <section id="lv-info-screen" class="screen">
         <div style="display: flex; gap: 10px; margin-bottom: 15px;">
             <button class="btn-back" onclick="navigateTo('mission-screen')" style="margin-bottom: 0;">
@@ -398,18 +420,20 @@
         </div>
         <h2 id="lv-info-chapter" class="info-chapter-title">任務一</h2>
         <div id="lv-info-name" class="info-mission-box">入口的老約定</div>
+        
+        <!-- 單層極簡發光雷達圖 -->
         <div class="radar-box">
             <svg class="radar-svg" viewBox="0 0 100 100">
-                <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
-                <polygon points="50,25 77,41 77,59 50,75 23,59 23,41" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                <!-- 僅一層最外圈六邊形 -->
+                <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="rgba(160,196,255,0.25)" stroke-width="1.5" />
                 <polygon id="radar-shape" class="radar-area" points="" />
             </svg>
-            <div class="radar-label" style="top:-5%; left:50%; transform:translateX(-50%);">邏輯推理</div>
-            <div class="radar-label" style="top:22%; right:-12%;">互動操作</div>
-            <div class="radar-label" style="bottom:22%; right:-12%;">觀察探索</div>
-            <div class="radar-label" style="bottom:-5%; left:50%; transform:translateX(-50%);">判讀理解</div>
-            <div class="radar-label" style="bottom:22%; left:-12%;">情報整合</div>
-            <div class="radar-label" style="top:22%; left:-12%;">情報搜查</div>
+            <div class="radar-label" style="top:-10%; left:50%; transform:translateX(-50%);">邏輯推理</div>
+            <div class="radar-label" style="top:22%; right:-15%;">互動操作</div>
+            <div class="radar-label" style="bottom:22%; right:-15%;">觀察探索</div>
+            <div class="radar-label" style="bottom:-10%; left:50%; transform:translateX(-50%);">判讀理解</div>
+            <div class="radar-label" style="bottom:22%; left:-15%;">情報整合</div>
+            <div class="radar-label" style="top:22%; left:-15%;">情報搜查</div>
         </div>
         <div id="lv-info-stars" style="text-align:center; color:var(--accent-yellow); margin-bottom:25px; font-size:2rem;"></div>
         <button class="btn-action" style="display:block; margin:0 auto; padding:14px 60px; border-radius:14px;" onclick="nextLevelStep()">START MISSION</button>
@@ -492,9 +516,8 @@
         </div>
     </section>
 
-    <!-- 全局精簡底部導覽列 -->
+    <!-- 全局底部導覽列 -->
     <nav id="global-nav" class="bottom-nav">
-        <!-- 檔案改為圖騰 -->
         <div class="nav-item" onclick="openOverlay('archive-overlay')">
             <svg viewBox="0 0 24 24">
                 <path d="M12 2L2 12h3v8h14v-8h3L12 2zm0 4.25l5 5V18H7v-6.75l5-5z"/>
@@ -560,14 +583,10 @@
                 answer: "2",
                 errorMsg: "日記上的鹽痕沒有反應。你似乎找到了方向，但還沒有看清楚杜勒說的「牠們」到底有多少。",
                 postStory: "日記第一頁忽然發出微弱的藍光。\n紙面上那些模糊的入口輪廓開始移動，像是有人從海霧中慢慢走近。\n你們聽見杜勒留下的聲音：\n「人若能找到彼此，就不算真正迷路。」\n入口的影子中，一枚圖騰緩緩浮現。",
-                postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczMxxa-Ms3ma-_E1lLzUnJcOnXmafzy1d2Q57555v0O79cwFDFfDsxmHxdRfUjRSY1ofQJegpl7QE6KL4Mz3dHxMNRrRSSO2M0iJkekyQuC9rueJslq_k08VZv41_AJH3m3243g3RrE5JyD6FxeSKw=w370-h378-s-no-gm?authuser=0"
+                postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczMxxa-Ms3ma-_E1lLzUnJcOnXQmafzy1d2Q57555v0O79cwFDFfDsxmHxdRfUjRSY1ofQJegpl7QE6KL4Mz3dHxMNRrRSSO2M0iJkekyQuC9rueJslq_k08VZv41_AJH3m3243g3RrE5JyD6FxeSKw=w370-h378-s-no-gm?authuser=0"
             },
             { 
-                id: 2, 
-                chapter: "任務二", 
-                name: "地方的味道", 
-                stars: 2, 
-                radar: [2, 2, 3, 3, 2, 3], 
+                id: 2, chapter: "任務二", name: "地方的味道", stars: 2, radar: [2, 2, 3, 3, 2, 3], 
                 story: [
                     `1983.07.15 午後陰，炭火味重
 
@@ -600,11 +619,7 @@
                 postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczNOP5RCCSJ6DaNUOA5qA3uMmqiWSUF9i3Fo-Ronf5pTovgLw_tvqNoTTeMI6SFI52s9T1jyPuX6MCgozUV_9-Ib9ANXKjQs7HK-RXaJLoD0nY_Zb_o7j007LjqCiRorgNAwZAimdzG-0DO1-o7iuMs=w350-h391-s-no-gm?authuser=0"
             },
             { 
-                id: 3, 
-                chapter: "任務三", 
-                name: "沙灘消失後", 
-                stars: 3, 
-                radar: [1, 2, 3, 5, 4, 2], 
+                id: 3, chapter: "任務三", name: "沙灘消失後", stars: 3, radar: [1, 2, 3, 5, 4, 2], 
                 story: [
                     `1983.08.02 午後雨停，港風帶鹽
 
@@ -630,14 +645,10 @@
                 answer: "8",
                 errorMsg: "日記頁上的沙痕沒有變化。那排房子如何一棟接著一棟，站在舊海岸的位置上。",
                 postStory: "當正確數字被輸入後，杜勒日記上的沙痕開始移動。紙面上原本模糊的海岸線，慢慢浮現出舊沙灘的輪廓。接著，浪線退去，一排房子的影子站了起來。\n\n你們聽見杜勒留下的聲音：\n「海不在眼前，不代表它沒有來過。」\n「有人記得，沙灘就還沒有完全消失。」\n\n排屋與浪線之間，一枚新的圖騰緩緩浮現。",
-                postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczN2uwsPEqbXnRZSgQD_C0CDuS5xtzqFva7mPfMMUIYRX6yUUtk2tq0-v5pPYTKOlJi6KIXUCknAL7r2cH_I8K5N_X66DhjDECloApchC1JtxQIdnAj_33BFIexIGJwgJRxxj6ZHOMBJE_8pQamzox8=w371-h387-s-no-gm?authuser=0"
+                postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczN2uwsPEqbXnRZSgQD_C0CDuS5xtzqFva7mPfMMUIYRX6yUUtk2tq0-v5pPYTKOlJi6KIXUCknAL7r2cH_I8K5N_X66DhjDECloApchC1JtxQIdnAj_33BFIexIGJwgJRxxj6ZHOMBJE_8pQamzox8=w371-h386-s-no-gm?authuser=0"
             },
             { 
-                id: 4, 
-                chapter: "任務四", 
-                name: "神蹟", 
-                stars: 3, 
-                radar: [3, 1, 2, 4, 4, 3], 
+                id: 4, chapter: "任務四", name: "神蹟", stars: 3, radar: [3, 1, 2, 4, 4, 3], 
                 story: [
                     `1983.08.18 雨後放晴，廟前香煙未散
 
@@ -667,11 +678,7 @@
                 postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczP66CCYywi1KMaLl8yj5gqNA6zsQ9vD_aX1t_YQAqjv2UFyjBQyQfW2x7u3cZsN4aHh-f2cIb0A9U13cZAm0QvNyKyx_e54-9eknQHunZAcN4uTqrLggZH2Gk_uslK6lB_xcJXMa_FA5fbWdju1zfI=w370-h386-s-no-gm?authuser=0"
             },
             { 
-                id: 5, 
-                chapter: "任務五", 
-                name: "溫慢的海", 
-                stars: 5, 
-                radar: [4, 2, 4, 5, 4, 4], 
+                id: 5, chapter: "任務五", name: "溫慢的海", stars: 5, radar: [4, 2, 4, 5, 4, 4], 
                 story: [
                     `1983.09.03 薄雲，夕色泛紅
 今日整理舊物，翻出一張很久以前的照片。照片裡的八斗子，看起來離海很近。沙還在，風也像是比較慢。夕陽落在水面上的時候，海會變成一片紅。那種紅不是熱鬧的紅，是一天快要結束時，海面靜下來的顏色。
@@ -696,7 +703,7 @@
                 answer: "出水口",
                 errorMsg: "日記中的老照片沒有反應。你看見了夕陽，但還沒有看見杜勒真正想讓你們找回的地方",
                 postStory: "當正確名稱被輸入後，老照片上的夕陽忽然亮起。水面開始泛出一圈又一圈細小波紋。那些原本模糊的尖影逐漸清晰，像是從記憶深處重新浮上來。\n\n你們聽見杜勒留下的聲音：「照片會褪色，地方會改變。」「但只要有人願意說起，消失的海就還會在記憶裡發亮。」\n\n照片中的水波向外擴散，圖騰從夕光與海面之間浮現。",
-                postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczNufGX9cPmOYMFaftqk9fLNPNcR6Gq_hVDW67PvWNmaMg1zuwfMsG6q4qP8EMu5GPhbMaiQegqhZY2vRrsHueZwYwU0bUlQoGO-h81B08DubgwExD18jOZMzARhfZyvyT1h7mR1AFiHOHwXIjDy9H0=w383-h385-s-no-gm?authuser=0"
+                postStoryImg: "https://lh3.googleusercontent.com/pw/AP1GczNufGX9cPmOYMFaftqk9fLNPNcR6Gq_hVDW67PvWNmaMg1zuwfMsG6q4qP8EMu5GPhbMaiQegqhZY2vRrsHueZwYwU0bUlQoGO-h81B08DubgwExD18jOZMzARhfZyvyT1h7mR1AFiHOHwXIjDy9H0=w383-h386-s-no-gm?authuser=0"
             },
             { id: 6, chapter: "最終章", name: "最後的考驗", stars: 5, radar: [5, 5, 5, 5, 5, 5], story: ["解鎖終極系統。"], answer: "LEGEND", isFinal: true }
         ];
@@ -704,7 +711,9 @@
         let state = { isStarted: false, playTime: 0, completedMissions: [], activeMId: null, activeStep: 'main', storyPageIndex: 0 };
         const STORAGE_KEY = 'abs_port_pro_v18_final';
 
-        function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+        function saveState() { 
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); 
+        }
         
         function loadState() {
             const saved = localStorage.getItem(STORAGE_KEY);
@@ -719,11 +728,17 @@
         function resumeGame() {
             state = JSON.parse(localStorage.getItem(STORAGE_KEY));
             document.getElementById('resume-dialog').style.display = 'none';
-            if (state.activeMId) openLevel(state.activeMId, state.activeStep, state.storyPageIndex);
-            else navigateTo('mission-screen');
+            if (state.activeMId) {
+                openLevel(state.activeMId, state.activeStep, state.storyPageIndex);
+            } else {
+                navigateTo('mission-screen');
+            }
         }
 
-        function discardAndStart() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
+        function discardAndStart() { 
+            localStorage.removeItem(STORAGE_KEY); 
+            location.reload(); 
+        }
 
         function prevLevelStep() {
             const m = missionData.find(x => x.id === state.activeMId);
@@ -763,19 +778,22 @@
             }
         }
 
-        function showProloguePrev(targetPage) {
-            document.querySelectorAll('.prologue-page').forEach(p => p.classList.remove('active'));
-            document.getElementById(`prologue-p${targetPage}`).classList.add('active');
-        }
-
         function navigateTo(screenId) {
+            // 隱藏所有畫面
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
             
-            const nav = document.getElementById('global-nav');
+            // 顯示目標畫面
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+            
             // 底部導覽列只在任務列表 (mission-screen) 顯示
-            const showNav = (screenId === 'mission-screen');
-            nav.style.display = showNav ? 'grid' : 'none';
+            const nav = document.getElementById('global-nav');
+            if (nav) {
+                const showNav = (screenId === 'mission-screen');
+                nav.style.display = showNav ? 'grid' : 'none';
+            }
             
             if (screenId === 'mission-screen') { 
                 state.isStarted = true; 
@@ -789,6 +807,7 @@
 
         function renderMissionList() {
             const container = document.getElementById('mission-list-container');
+            if (!container) return;
             container.innerHTML = '';
 
             const completedFirstFive = state.completedMissions.filter(id => id >= 1 && id <= 5).length;
@@ -824,6 +843,7 @@
 
         function openLevel(id, step = 'info', page = 0) {
             const m = missionData.find(x => x.id === id);
+            if (!m) return;
             state.activeMId = id; state.activeStep = step; state.storyPageIndex = page; saveState();
             
             if (step === 'info') {
@@ -886,8 +906,14 @@
 
         function drawRadar(vals) {
             const angles = [-90, -30, 30, 90, 150, 210];
-            const pts = angles.map((a, i) => { const r = (vals[i] / 5) * 40; return `${50 + r * Math.cos(a * Math.PI / 180)},${50 + r * Math.sin(a * Math.PI / 180)}`; }).join(' ');
-            document.getElementById('radar-shape').setAttribute('points', pts);
+            const pts = angles.map((a, i) => { 
+                const r = (vals[i] / 5) * 40; 
+                return `${50 + r * Math.cos(a * Math.PI / 180)},${50 + r * Math.sin(a * Math.PI / 180)}`; 
+            }).join(' ');
+            const shape = document.getElementById('radar-shape');
+            if (shape) {
+                shape.setAttribute('points', pts);
+            }
         }
 
         function nextLevelStep() { 
@@ -897,22 +923,36 @@
             
             if (nextStep === 'puzzle' && state.completedMissions.includes(state.activeMId)) {
                 const m = missionData.find(x => x.id === state.activeMId);
-                if (m.postStory) nextStep = 'postStory';
+                if (m && m.postStory) nextStep = 'postStory';
                 else { navigateTo('mission-screen'); return; }
             }
             openLevel(state.activeMId, nextStep); 
         }
 
-        function nextStoryPage() { const m = missionData.find(x => x.id === state.activeMId); if (state.storyPageIndex < m.story.length - 1) openLevel(state.activeMId, 'story', state.storyPageIndex + 1); else nextLevelStep(); }
+        function nextStoryPage() { 
+            const m = missionData.find(x => x.id === state.activeMId); 
+            if (!m) return;
+            if (state.storyPageIndex < m.story.length - 1) {
+                openLevel(state.activeMId, 'story', state.storyPageIndex + 1); 
+            } else {
+                nextLevelStep(); 
+            }
+        }
 
         function verifyAnswer() {
             const input = document.getElementById('ans-input').value.trim().toUpperCase();
             const m = missionData.find(x => x.id === state.activeMId);
+            if (!m) return;
             if (input === m.answer.toUpperCase()) {
-                if (!state.completedMissions.includes(m.id)) state.completedMissions.push(m.id);
+                if (!state.completedMissions.includes(m.id)) {
+                    state.completedMissions.push(m.id);
+                }
                 saveState();
-                if (m.postStory) openLevel(m.id, 'postStory');
-                else navigateTo('mission-screen');
+                if (m.postStory) {
+                    openLevel(m.id, 'postStory');
+                } else {
+                    navigateTo('mission-screen');
+                }
             } else {
                 const errEl = document.getElementById('puzzle-error');
                 errEl.innerText = m.errorMsg || "驗證失敗，密鑰不符。";
@@ -925,11 +965,11 @@
             if (!state.isStarted) return;
             
             const totemData = [
-                { id: 1, name: "入口圖騰：相遇之印", desc: "「人若能找到彼此，就不算真正迷路。」\n喚醒八斗子入口處的古老回憶印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczMxxa-Ms3ma-_E1lLzUnJcOnXmafzy1d2Q57555v0O79cwFDFfDsxmHxdRfUjRSY1ofQJegpl7QE6KL4Mz3dHxMNRrRSSO2M0iJkekyQuC9rueJslq_k08VZv41_AJH3m3243g3RrE5JyD6FxeSKw=w370-h378-s-no-gm?authuser=0" },
+                { id: 1, name: "入口圖騰：相遇之印", desc: "「人若能找到彼此，就不算真正迷路。」\n喚醒八斗子入口處的古老回憶印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczMxxa-Ms3ma-_E1lLzUnJcOnXQmafzy1d2Q57555v0O79cwFDFfDsxmHxdRfUjRSY1ofQJegpl7QE6KL4Mz3dHxMNRrRSSO2M0iJkekyQuC9rueJslq_k08VZv41_AJH3m3243g3RrE5JyD6FxeSKw=w370-h378-s-no-gm?authuser=0" },
                 { id: 2, name: "地方圖騰：漁火之印", desc: "承載著地方的獨特香氣與歷史溫度，牽引著世代繁衍與傳承的脈絡。", img: "https://lh3.googleusercontent.com/pw/AP1GczNOP5RCCSJ6DaNUOA5qA3uMmqiWSUF9i3Fo-Ronf5pTovgLw_tvqNoTTeMI6SFI52s9T1jyPuX6MCgozUV_9-Ib9ANXKjQs7HK-RXaJLoD0nY_Zb_o7j007LjqCiRorgNAwZAimdzG-0DO1-o7iuMs=w350-h391-s-no-gm?authuser=0" },
-                { id: 3, name: "沙灘圖騰：潮汐之印", desc: "訴說著被時間與海浪掩埋的黃金海岸，凝聚海洋最深沉的歷史記憶。", img: "https://lh3.googleusercontent.com/pw/AP1GczN2uwsPEqbXnRZSgQD_C0CDuS5xtzqFva7mPfMMUIYRX6yUUtk2tq0-v5pPYTKOlJi6KIXUCknAL7r2cH_I8K5N_X66DhjDECloApchC1JtxQIdnAj_33BFIexIGJwgJRxxj6ZHOMBJE_8pQamzox8=w371-h387-s-no-gm?authuser=0" },
+                { id: 3, name: "沙灘圖騰：潮汐之印", desc: "訴說著被時間與海浪掩埋的黃金海岸，凝聚海洋最深沉的歷史記憶。", img: "https://lh3.googleusercontent.com/pw/AP1GczN2uwsPEqbXnRZSgQD_C0CDuS5xtzqFva7mPfMMUIYRX6yUUtk2tq0-v5pPYTKOlJi6KIXUCknAL7r2cH_I8K5N_X66DhjDECloApchC1JtxQIdnAj_33BFIexIGJwgJRxxj6ZHOMBJE_8pQamzox8=w371-h386-s-no-gm?authuser=0" },
                 { id: 4, name: "神蹟圖騰：指引之印", desc: "「只要有人替他點香，他就知道自己不是孤身一人。」\n喚醒八斗子度天宮媽祖守護子民與離鄉遊子的溫暖印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczP66CCYywi1KMaLl8yj5gqNA6zsQ9vD_aX1t_YQAqjv2UFyjBQyQfW2x7u3cZsN4aHh-f2cIb0A9U13cZAm0QvNyKyx_e54-9eknQHunZAcN4uTqrLggZH2Gk_uslK6lB_xcJXMa_FA5fbWdju1zfI=w370-h386-s-no-gm?authuser=0" },
-                { id: 5, name: "溫暖圖騰：歸巢之印", desc: "「照片會褪色，地方會改變。但只要有人願意說起，消失的海就還會在記憶裡發亮。」\n喚醒八斗子昔日北火出水口的溫暖歷史印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczNufGX9cPmOYMFaftqk9fLNPNcR6Gq_hVDW67PvWNmaMg1zuwfMsG6q4qP8EMu5GPhbMaiQegqhZY2vRrsHueZwYwU0bUlQoGO-h81B08DubgwExD18jOZMzARhfZyvyT1h7mR1AFiHOHwXIjDy9H0=w383-h385-s-no-gm?authuser=0" }
+                { id: 5, name: "溫慢圖騰：歸巢之印", desc: "「照片會褪色，地方會改變。但只要有人願意說起，消失的海就還會在記憶裡發亮。」\n喚醒八斗子昔日北火出水口的溫暖歷史印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczNufGX9cPmOYMFaftqk9fLNPNcR6Gq_hVDW67PvWNmaMg1zuwfMsG6q4qP8EMu5GPhbMaiQegqhZY2vRrsHueZwYwU0bUlQoGO-h81B08DubgwExD18jOZMzARhfZyvyT1h7mR1AFiHOHwXIjDy9H0=w383-h386-s-no-gm?authuser=0" }
             ];
 
             container.innerHTML = totemData.map(item => {
@@ -962,9 +1002,15 @@
             if (id === 'archive-overlay') {
                 renderTotems();
             }
-            document.getElementById(id).style.display = 'block'; 
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = 'block'; 
+            }
         }
-        function closeOverlay() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); }
+        
+        function closeOverlay() { 
+            document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); 
+        }
         
         function resetGame() { 
             closeOverlay();
@@ -980,34 +1026,15 @@
             location.reload();
         }
 
-        // 序幕流程控制
-        function showPrologueNext() { 
-            document.getElementById('prologue-p1').classList.remove('active'); 
-            document.getElementById('prologue-p2').classList.add('active'); 
-        }
-
-        function showPrologueP3() { 
-            document.getElementById('prologue-p2').classList.remove('active'); 
-            document.getElementById('prologue-p3').classList.add('active'); 
-        }
-
-        function showPrologueP4() { 
-            document.getElementById('prologue-p3').classList.remove('active'); 
-            document.getElementById('prologue-p4').classList.add('active'); 
-        }
-
         function startNewJourney() { 
             state.isStarted = true; 
             saveState(); 
-            document.getElementById('prologue-p1').classList.add('active');
-            document.getElementById('prologue-p2').classList.remove('active');
-            document.getElementById('prologue-p3').classList.remove('active');
-            document.getElementById('prologue-p4').classList.remove('active');
-            navigateTo('prologue-screen'); 
+            navigateTo('prologue-p1'); 
         }
 
         window.onload = () => {
-            let p = 0; const bar = document.getElementById('progress-bar');
+            let p = 0; 
+            const bar = document.getElementById('progress-bar');
             const loadTimer = setInterval(() => { 
                 p += 10; 
                 if (p >= 100) { 
@@ -1015,13 +1042,19 @@
                     clearInterval(loadTimer); 
                     setTimeout(() => { 
                         loadState(); 
-                        if (!document.getElementById('resume-dialog').style.display || document.getElementById('resume-dialog').style.display === 'none') {
+                        const resumeDialog = document.getElementById('resume-dialog');
+                        if (!resumeDialog || resumeDialog.style.display === 'none' || !resumeDialog.style.display) {
                             navigateTo('main-screen'); 
                         }
                     }, 500); 
                 }
-                bar.style.strokeDashoffset = 314 - (p/100)*314; 
-                document.getElementById('percent-val').innerText = p; 
+                if (bar) {
+                    bar.style.strokeDashoffset = 314 - (p/100)*314; 
+                }
+                const percentVal = document.getElementById('percent-val');
+                if (percentVal) {
+                    percentVal.innerText = p; 
+                }
             }, 40);
         };
     </script>
