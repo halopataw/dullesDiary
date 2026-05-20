@@ -10,8 +10,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="杜勒日記">
 
-    <!-- 引入 Google Fonts (同時導入 Noto Sans TC 與 Noto Serif TC) -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=300;400;700&family=Noto+Serif+TC:wght=300;400;700&display=swap" rel="stylesheet">
+    <!-- 引入 Google Fonts (同時導入 Noto Sans TC 思源黑體 與 Noto Serif TC 思源宋體) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -73,6 +73,7 @@
             pointer-events: none;
         }
 
+        /* 畫面轉跳控制 */
         .screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -253,6 +254,18 @@
     <div class="background-container"></div>
     <div class="vignette"></div>
 
+    <!-- 首頁時空同步定位驗證鎖 -->
+    <div id="date-lock-dialog" class="glass-card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 88%; max-width: 400px; z-index: 22000; display: none; text-align: center;">
+        <h3 style="color: var(--accent-yellow); margin-bottom: 12px; letter-spacing: 2px;">時空同步定位</h3>
+        <p style="font-size: 0.9rem; margin-bottom: 20px; color: var(--text-dim); line-height: 1.6;">請輸入今日時空定位金鑰（今日日期，如 0521）：</p>
+        <input type="text" id="date-input" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: white; text-align: center; border-radius: 12px; margin-bottom: 20px; font-size: 1.2rem;" placeholder="請輸入 4 碼數字">
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-action" style="flex: 1;" onclick="verifyDateCode()">驗證金鑰</button>
+            <button class="btn-action" style="flex: 1; background: transparent; border: 1px solid var(--glass-border); color: white;" onclick="closeDateLock()">取消</button>
+        </div>
+        <p id="date-error" style="color: var(--error-red); display: none; text-align: center; margin-top: 15px; font-size: 0.85rem;">金鑰校準失敗，請確認日期格式是否正確。</p>
+    </div>
+
     <!-- 任務紀錄恢復 -->
     <div id="resume-dialog" class="glass-card" style="text-align: center;">
         <h3 style="color: var(--accent-yellow); margin-bottom: 12px;">中斷紀錄偵測</h3>
@@ -429,7 +442,6 @@
         <!-- 單層極簡發光雷達圖 -->
         <div class="radar-box">
             <svg class="radar-svg" viewBox="0 0 100 100">
-                <!-- 僅一層最外圈六邊形 -->
                 <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="rgba(160,196,255,0.25)" stroke-width="1.5" />
                 <polygon id="radar-shape" class="radar-area" points="" />
             </svg>
@@ -495,8 +507,6 @@
             </button>
         </div>
         <div class="glass-card">
-            <!-- 任務專用謎題圖片容器 -->
-            <div id="lv-puzzle-img-box" class="img-container-full" style="display:none;"><img id="lv-puzzle-img" src=""></div>
             <p id="lv-puzzle-desc" style="margin-bottom:15px; font-weight: 700; white-space: pre-wrap;"></p>
             <input type="text" id="ans-input" style="width:100%; padding:18px; background:rgba(0,0,0,0.5); border:1px solid var(--glass-border); color:white; text-align:center; border-radius:12px; margin-bottom:20px; font-size:1.4rem;" placeholder="輸入驗證密鑰">
             <button id="submit-btn" class="btn-action" style="width:100%;" onclick="verifyAnswer()">提交驗證</button>
@@ -519,7 +529,7 @@
         <div class="glass-card">
             <div id="lv-post-img-box" class="img-container-full" style="display:block;"><img id="lv-post-img" src=""></div>
             <div id="lv-post-text" style="line-height:2; font-size: 1rem; text-align: justify; white-space: pre-wrap;"></div>
-            <button id="lv-post-btn" class="btn-action" style="width:100%; margin-top:25px;" onclick="completePostStory()">獲得圖騰 ➔</button>
+            <button id="post-story-next-btn" class="btn-action" style="width:100%; margin-top:25px;" onclick="completePostStory()">獲得圖騰 ➔</button>
         </div>
     </section>
 
@@ -539,17 +549,17 @@
         </div>
     </section>
 
-    <!-- 11. 五段記憶成果頁面 (P8) -->
+    <!-- 11. 五段記憶成果頁面 (P8 含通關時間計時器) -->
     <section id="final-summary-screen" class="screen" style="justify-content: center; align-items: center; text-align: center;">
         <div class="glass-card" style="width: 100%; max-width: 500px; padding: 24px; margin: auto;">
             <h2 class="success-title" style="color: var(--accent-yellow); font-size: 2rem; margin-bottom: 20px; letter-spacing: 4px;">五段八斗子記憶</h2>
-            <div class="story-text-container" style="text-align: justify; margin-bottom: 25px; max-height: 40dvh; overflow-y: auto;">
-                
-                <!-- 任務完成時間模組 -->
-                <div id="completion-time-box" style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.35); padding: 12px; border-radius: 14px; margin-bottom: 20px; text-align: center; font-weight: bold; font-family: 'Noto Serif TC', serif;">
-                    ⏱️ 任務完成時間：<span id="final-duration-text" style="color: var(--accent-yellow); font-size: 1.15rem; letter-spacing: 1px;">偵測中...</span>
-                </div>
+            
+            <!-- 完成任務時間計時器 -->
+            <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid var(--accent-yellow); color: var(--accent-yellow); padding: 15px; border-radius: 12px; font-weight: bold; margin-bottom: 20px; letter-spacing: 1px; font-size: 0.95rem;">
+                ⏱️ 任務完成總耗時：<span id="completion-time-val" style="font-family: 'Noto Sans TC', sans-serif;">0 秒</span>
+            </div>
 
+            <div class="story-text-container" style="text-align: justify; margin-bottom: 25px; max-height: 35dvh; overflow-y: auto;">
                 <p style="font-weight: bold; text-align: center; color: var(--text-white); margin-bottom: 15px;">
                     完成的不只是五道任務，你們從一位老船長的生活日記裡，看見八斗子如何被記住：
                 </p>
@@ -616,7 +626,7 @@
 
 今日海風不大，船也沒有急著出去。
 我沿著八斗子的入口慢慢走，看見幾個外地來的人站在路口張望。
-物理一邊看著手上的東西，一邊確認自己是不是走對地方。
+他們一邊看著手上的東西，一邊確認自己是不是走對地方。
 我看了覺得有些好笑。以前哪有這麼方便。
 那時候要約人，只能把地點說清楚，然後相信對方會來。
 八斗子入口有個大家都懂的老地方。不是廟，也不是港口，更不是魚市場。`,
@@ -649,7 +659,7 @@
 後來港變了，船變了，討海人的日子也變了。
 很多老地方安靜下來，不再像以前那樣日日有人進出。
 可那間老屋沒有真的沉睡。`,
-                    `現在，屋裡常飄出炭火香。
+                    `現在，屋裡常飄出炭火香.
 有人把海裡細小而珍貴的味道，拌進肉裡，慢慢烤熟。
 咬下去的時候，嘴裡會有細細的聲響。
 像浪花碎開，也像從前魚寮裡那些沒有寫進帳本的日子，又重新活了過來。
@@ -734,7 +744,7 @@
                 id: 5, chapter: "任務五", name: "溫慢的海", stars: 5, radar: [4, 2, 4, 5, 4, 4], 
                 story: [
                     `1983.09.03 薄雲，夕色泛紅
-今日整理舊物，翻出一張很久以前的照片。照片裡的八斗子，看起來離海很近。沙還在，風也像是比較慢。夕陽落在水面上的時候，海會變成一片紅。那種紅不是熱鬧的紅，是一天快要結束時，海面靜下來的顏色.
+今日整理舊物，翻出一張很久以前的照片。照片裡的八斗子，看起來離海很近。沙還在，風也像是比較慢。夕陽落在水面上的時候，海會變成一片紅。那種紅不是熱鬧的紅，是一天快要結束時，海面靜下來的顏色。
 我看著照片，看了很久。有些年輕人若看到，可能只會說：
 「那是以前的海邊。」
 可我知道，那不只是海邊。那裡曾經有孩子的笑聲，有放學後不想太早回家的腳步，也有大人嘴上罵危險、卻還是站在一旁看著的背影。尤其是天冷的時候，孩子們總知道該往哪裡去。`,
@@ -750,7 +760,7 @@
                 landmarkImg: "https://lh3.googleusercontent.com/pw/AP1GczNjtSmk2e1SqaqnMIO1wnp2V4kpjsV1eRX4oChZcRVN10QzQRoFS-Z-GeR0Dr_OUYn-WFlhEV87ZuvfBP384zonG-lzjVRGb8c41A_iVAMN8ul1vMS1XCpQCIcLqJWg8eF0ogCI51vw0v0VZJSZXec=w1284-h901-s-no-gm?authuser=0",
                 landmarkText: "日記提到一張舊照片。照片裡的八斗子仍有沙灘，海邊有人遠望夕陽。照片前方有幾道從水面露出的尖影，這些尖影代表著什麼?\n\n情報:這段記憶與昔日北火發電廠有關。你要輸入＿水＿",
                 landmarkBtnText: "前往解謎",
-                puzzleDesc: "日記提到一張舊照片。照片裡的八斗子仍有沙灘，海邊有人遠望夕陽。照片前方有幾道從水面露出的尖影，這些尖影代表著什麼?\n\n情報:這段記憶與昔日北火發電廠有關。你要輸入＿水＿",
+                puzzleDesc: "日記提到一張舊照片。照片裡的八斗子仍有沙灘，海邊有人遠望夕陽。照片前方有幾道從水面露出的尖影，這些尖影代表著什麼?\n\n情報:這段記憶與昔日北火發電廠有關.你要輸入＿水＿",
                 inputPlaceholder: "請輸入名稱",
                 submitBtnText: "送出答案",
                 answer: "出水口",
@@ -781,10 +791,9 @@
                     "https://lh3.googleusercontent.com/pw/AP1GczPGFt1Mdz9t7Y8ltzLFTFlxtWH1_LX_wHofJwPRJomjBlwEETmoLJIi2zPg5naR3qHQW_PRScD9y5inPBtHitYBoO1jGLepgbSxY629xLm7lISCv8oL866p2KGVq7REKPBFtPn2WRKYGS-dyaIo8rM=w1274-h901-s-no-gm?authuser=0",
                     "https://lh3.googleusercontent.com/pw/AP1GczPGFt1Mdz9t7Y8ltzLFTFlxtWH1_LX_wHofJwPRJomjBlwEETmoLJIi2zPg5naR3qHQW_PRScD9y5inPBtHitYBoO1jGLepgbSxY629xLm7lISCv8oL866p2KGVq7REKPBFtPn2WRKYGS-dyaIo8rM=w1274-h901-s-no-gm?authuser=0"
                 ],
-                landmarkImg: "",
+                landmarkImg: "https://lh3.googleusercontent.com/pw/AP1GczNn5Aft82neLg4TizfBZ_TK6IKgMpF3Xpy0L8FZM80L4aMvyeRd1J8gxh9gBwzK4e31p8LZQpqaJeOx6EsyWHgVfYOB6s9Cy9n81XJ_p_pXUd4FooyNFoImuYSk4YIhzi7nzkYQ42bhfY3yJSqDvWc=w1601-h901-s-no-gm?authuser=0",
                 landmarkText: "穿梭口就在眼前。海風從裂縫中吹出，帶著熟悉又陌生的鹽味，五枚圖騰在你們身後排列。輸入返航口訣",
                 landmarkBtnText: "前往驗證",
-                puzzleImg: "https://lh3.googleusercontent.com/pw/AP1GczNn5Aft82neLg4TizfBZ_TK6IKgMpF3Xpy0L8FZM80L4aMvyeRd1J8gxh9gBwzK4e31p8LZQpqaJeOx6EsyWHgVfYOB6s9Cy9n81XJ_p_pXUd4FooyNFoImuYSk4YIhzi7nzkYQ42bhfY3yJSqDvWc=w1601-h901-s-no-gm?authuser=0",
                 puzzleDesc: "穿梭口就在眼前。海風從裂縫中吹出，帶著熟悉又陌生的鹽味，五枚圖騰在你們身後排列。輸入返航口訣",
                 inputPlaceholder: "請輸入口訣",
                 submitBtnText: "啟動穿梭口",
@@ -805,17 +814,7 @@ A——LOO——
             }
         ];
 
-        let state = { 
-            isStarted: false, 
-            playTime: 0, 
-            completedMissions: [], 
-            activeMId: null, 
-            activeStep: 'main', 
-            storyPageIndex: 0,
-            startTime: null,
-            endTime: null,
-            elapsedSeconds: null
-        };
+        let state = { isStarted: false, playTime: 0, completedMissions: [], activeMId: null, activeStep: 'main', storyPageIndex: 0, startTime: null, endTime: null };
         const STORAGE_KEY = 'abs_port_pro_v18_final';
 
         function saveState() { 
@@ -835,14 +834,14 @@ A——LOO——
         function resumeGame() {
             state = JSON.parse(localStorage.getItem(STORAGE_KEY));
             document.getElementById('resume-dialog').style.display = 'none';
-            if (state.activeMId) {
-                if (state.activeStep === 'final-success-screen') {
-                    navigateTo('final-success-screen');
-                } else if (state.activeStep === 'final-summary-screen') {
-                    navigateTo('final-summary-screen');
-                } else {
-                    openLevel(state.activeMId, state.activeStep, state.storyPageIndex);
-                }
+            
+            // 修復在成果、成功總結頁時的中斷恢復
+            if (state.activeStep === 'final-success-screen') {
+                navigateTo('final-success-screen');
+            } else if (state.activeStep === 'final-summary-screen') {
+                navigateTo('final-summary-screen');
+            } else if (state.activeMId) {
+                openLevel(state.activeMId, state.activeStep, state.storyPageIndex);
             } else {
                 navigateTo('mission-screen');
             }
@@ -896,17 +895,34 @@ A——LOO——
             document.getElementById(`prologue-p${targetPage}`).classList.add('active');
         }
 
+        // ⏱️ 計算探索總耗時
+        function calculateElapsedTime() {
+            if (!state.startTime) return "0 秒";
+            const endTime = state.endTime || Date.now();
+            const diffMs = endTime - state.startTime;
+            const totalSecs = Math.floor(diffMs / 1000);
+            
+            if (totalSecs <= 0) return "1 秒";
+            
+            const hours = Math.floor(totalSecs / 3600);
+            const mins = Math.floor((totalSecs % 3600) / 60);
+            const secs = totalSecs % 60;
+            
+            let res = "";
+            if (hours > 0) res += hours + " 小時 ";
+            if (mins > 0 || hours > 0) res += mins + " 分 ";
+            res += secs + " 秒";
+            return res;
+        }
+
         function navigateTo(screenId) {
-            // 隱藏所有畫面
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             
-            // 顯示目標畫面
             const targetScreen = document.getElementById(screenId);
             if (targetScreen) {
                 targetScreen.classList.add('active');
             }
             
-            // 底部導覽列只在任務列表 (mission-screen) 顯示
             const nav = document.getElementById('global-nav');
             if (nav) {
                 const showNav = (screenId === 'mission-screen');
@@ -926,35 +942,12 @@ A——LOO——
             } else if (screenId === 'final-summary-screen') {
                 state.activeStep = 'final-summary-screen';
                 saveState();
-                updateFinalTimeDisplay();
-            }
-        }
-
-        function updateFinalTimeDisplay() {
-            const durationSpan = document.getElementById('final-duration-text');
-            if (!durationSpan) return;
-            
-            let seconds = state.elapsedSeconds;
-            if (!seconds && state.startTime && state.endTime) {
-                seconds = Math.floor((state.endTime - state.startTime) / 1000);
-            }
-            if (!seconds && state.startTime) {
-                seconds = Math.floor((Date.now() - state.startTime) / 1000);
-            }
-            
-            if (seconds) {
-                const hrs = Math.floor(seconds / 3600);
-                const mins = Math.floor((seconds % 3600) / 60);
-                const secs = seconds % 60;
                 
-                let timeStr = "";
-                if (hrs > 0) timeStr += `${hrs} 小時 `;
-                if (mins > 0 || hrs > 0) timeStr += `${mins} 分 `;
-                timeStr += `${secs} 秒`;
-                
-                durationSpan.innerText = timeStr;
-            } else {
-                durationSpan.innerText = "偵測中...";
+                // 動態渲染通關耗時
+                const timeValEl = document.getElementById('completion-time-val');
+                if (timeValEl) {
+                    timeValEl.innerText = calculateElapsedTime();
+                }
             }
         }
 
@@ -1037,16 +1030,6 @@ A——LOO——
                 }
                 document.getElementById('lv-puzzle-desc').innerText = m.puzzleDesc || "輸入密鑰：";
                 
-                // 動態設定謎題圖片
-                const puzImgBox = document.getElementById('lv-puzzle-img-box');
-                const puzImg = document.getElementById('lv-puzzle-img');
-                if (m.puzzleImg) {
-                    puzImg.src = m.puzzleImg;
-                    puzImgBox.style.display = 'block';
-                } else {
-                    puzImgBox.style.display = 'none';
-                }
-
                 const ansInput = document.getElementById('ans-input');
                 ansInput.value = '';
                 ansInput.placeholder = m.inputPlaceholder || "輸入驗證密鑰";
@@ -1064,14 +1047,10 @@ A——LOO——
                 if (m.postStoryImg) { imgEl.src = m.postStoryImg; imgBox.style.display = 'block'; } else { imgBox.style.display = 'none'; }
                 document.getElementById('lv-post-text').innerText = m.postStory;
                 
-                // 動態更換任務六的「進入穿梭口」文字
-                const postBtn = document.getElementById('lv-post-btn');
-                if (postBtn) {
-                    if (id === 6) {
-                        postBtn.innerText = "進入穿梭口 ➔";
-                    } else {
-                        postBtn.innerText = "獲得圖騰 ➔";
-                    }
+                // 任務六（最終章）獲得圖騰按鈕文字動態修正為「進入穿梭口」
+                const nextBtn = document.getElementById('post-story-next-btn');
+                if (nextBtn) {
+                    nextBtn.innerText = (id === 6) ? "進入穿梭口 ➔" : "獲得圖騰 ➔";
                 }
                 
                 navigateTo('lv-post-story-screen');
@@ -1130,12 +1109,9 @@ A——LOO——
                     state.completedMissions.push(m.id);
                 }
                 
-                // 任務六（最終考驗）解鎖成功鎖定計時
+                // 若為任務六（最終通關），立刻鎖定通關結束時間點
                 if (m.id === 6) {
-                    if (!state.endTime) {
-                        state.endTime = Date.now();
-                        state.elapsedSeconds = Math.floor((state.endTime - (state.startTime || Date.now())) / 1000);
-                    }
+                    state.endTime = Date.now();
                 }
                 
                 saveState();
@@ -1161,11 +1137,11 @@ A——LOO——
 
         function renderTotems() {
             const container = document.getElementById('archive-list');
-            if (!state.isStarted) return;
+            if (!state.isStarted || !container) return;
             
             const totemData = [
                 { id: 1, name: "入口圖騰：相遇之印", desc: "「人若能找到彼此，就不算真正迷路。」\n喚醒八斗子入口處的古老回憶印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczMxxa-Ms3ma-_E1lLzUnJcOnXQmafzy1d2Q57555v0O79cwFDFfDsxmHxdRfUjRSY1ofQJegpl7QE6KL4Mz3dHxMNRrRSSO2M0iJkekyQuC9rueJslq_k08VZv41_AJH3m3243g3RrE5JyD6FxeSKw=w370-h378-s-no-gm?authuser=0" },
-                { id: 2, name: "地方圖騰：漁火之印", desc: "承載著地方的獨特香氣與歷史溫度，牽引著世代繁衍與傳承的脈絡。", img: "https://lh3.googleusercontent.com/pw/AP1GczNOP5RCCSJ6DaNUOA5qA3uMmqiWSUF9i3Fo-Ronf5pTovgLw_tvqNoTTeMI6SFI52s9T1jyPuX6MCgozUV_9-Ib9ANXKjQs7HK-RXaJLoD0nY_Zb_o7j007LjqCiRorgNAwZAimdzG-0DO1-o7iuMs=w350-h391-s-no-gm?authuser=0" },
+                { id: 2, name: "地方圖騰：漁火之印", desc: "承載著地方的獨特香氣與歷史溫度，牽引著世代繁衍與傳承的脈絡。", img: "https://lh3.googleusercontent.com/pw/AP1GczNOP5RCCSJ6DaNUOA5qA3uMmqiWSUF9i3Fo-Ronf5pTovgLw_tvqNoTTeMI6SFI52s9T1jyPuX6MCgozUV_9-Ib9ANXKjQs7HK-RXaJLoD0nY_Zb_o7j007LjqCiRorgNAwZAimdzG-0DO1-o7iuMs=w350-h386-s-no-gm?authuser=0" },
                 { id: 3, name: "沙灘圖騰：潮汐之印", desc: "訴說著被時間與海浪掩埋的黃金海岸，凝聚海洋最深沉的歷史記憶。", img: "https://lh3.googleusercontent.com/pw/AP1GczN2uwsPEqbXnRZSgQD_C0CDuS5xtzqFva7mPfMMUIYRX6yUUtk2tq0-v5pPYTKOlJi6KIXUCknAL7r2cH_I8K5N_X66DhjDECloApchC1JtxQIdnAj_33BFIexIGJwgJRxxj6ZHOMBJE_8pQamzox8=w371-h386-s-no-gm?authuser=0" },
                 { id: 4, name: "神蹟圖騰：指引之印", desc: "「只要有人替他點香，他就知道自己不是孤身一人。」\n喚醒八斗子度天宮媽祖守護子民與離鄉遊子的溫暖印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczP66CCYywi1KMaLl8yj5gqNA6zsQ9vD_aX1t_YQAqjv2UFyjBQyQfW2x7u3cZsN4aHh-f2cIb0A9U13cZAm0QvNyKyx_e54-9eknQHunZAcN4uTqrLggZH2Gk_uslK6lB_xcJXMa_FA5fbWdju1zfI=w370-h386-s-no-gm?authuser=0" },
                 { id: 5, name: "溫慢圖騰：歸巢之印", desc: "「照片會褪色，地方會改變。但只要有人願意說起，消失的海就還會在記憶裡發亮。」\n喚醒八斗子昔日北火出水口的溫暖歷史印記。", img: "https://lh3.googleusercontent.com/pw/AP1GczNufGX9cPmOYMFaftqk9fLNPNcR6Gq_hVDW67PvWNmaMg1zuwfMsG6q4qP8EMu5GPhbMaiQegqhZY2vRrsHueZwYwU0bUlQoGO-h81B08DubgwExD18jOZMzARhfZyvyT1h7mR1AFiHOHwXIjDy9H0=w383-h386-s-no-gm?authuser=0" }
@@ -1174,7 +1150,8 @@ A——LOO——
             container.innerHTML = totemData.map(item => {
                 const isUnlocked = state.completedMissions.includes(item.id);
                 if (isUnlocked) {
-                    const imgHtml = item.img ? `<div class="img-container-full" style="display:block; margin: 12px 0;"><img src="${item.img}" style="max-height: 140px; width: auto; margin: 0 auto; border-radius: 8px;"></div>` : '';
+                    // 使用安全不受 CSS 隱藏規則干涉的自訂容器，確保 100% 正常渲染
+                    const imgHtml = item.img ? `<div style="display:block; margin: 12px 0; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); border-radius: 12px; overflow: hidden; text-align: center; padding: 5px;"><img src="${item.img}" style="max-height: 140px; width: auto; margin: 0 auto; border-radius: 8px; display: block;"></div>` : '';
                     return `
                         <div style="padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.12); margin-bottom:16px;">
                             <div style="font-weight:700; color:var(--accent-yellow); font-size:0.95rem; display: flex; align-items: center; gap: 8px;">
@@ -1241,17 +1218,42 @@ A——LOO——
             document.getElementById('prologue-p4').classList.add('active'); 
         }
 
+        // 🔑 首頁「時空同步定位」解鎖與計時開始
         function startNewJourney() { 
-            state.isStarted = true; 
-            state.startTime = Date.now();
-            state.endTime = null;
-            state.elapsedSeconds = null;
-            saveState(); 
-            document.getElementById('prologue-p1').classList.add('active');
-            document.getElementById('prologue-p2').classList.remove('active');
-            document.getElementById('prologue-p3').classList.remove('active');
-            document.getElementById('prologue-p4').classList.remove('active');
-            navigateTo('prologue-screen'); 
+            document.getElementById('date-lock-dialog').style.display = 'block';
+            document.getElementById('date-error').style.display = 'none';
+            document.getElementById('date-input').value = '';
+        }
+
+        function verifyDateCode() {
+            const input = document.getElementById('date-input').value.trim();
+            const now = new Date();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const correctCode = mm + dd;
+
+            if (input === correctCode) {
+                document.getElementById('date-lock-dialog').style.display = 'none';
+                
+                // 成功定位：初始化開始時間與狀態
+                state.isStarted = true;
+                state.startTime = Date.now();
+                state.endTime = null;
+                saveState();
+                
+                // 進入序幕
+                document.getElementById('prologue-p1').classList.add('active');
+                document.getElementById('prologue-p2').classList.remove('active');
+                document.getElementById('prologue-p3').classList.remove('active');
+                document.getElementById('prologue-p4').classList.remove('active');
+                navigateTo('prologue-screen'); 
+            } else {
+                document.getElementById('date-error').style.display = 'block';
+            }
+        }
+
+        function closeDateLock() {
+            document.getElementById('date-lock-dialog').style.display = 'none';
         }
 
         window.onload = () => {
